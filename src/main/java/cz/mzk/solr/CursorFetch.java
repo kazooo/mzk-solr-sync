@@ -22,7 +22,6 @@ public class CursorFetch {
     private final SolrClient solrClient;
     private static final String UUID_FIELD_NAME = "PID";
     private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
-    private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
     public CursorFetch(SolrClient sc) {
         solrClient = sc;
