@@ -21,12 +21,13 @@ public class Synchronizer {
     private final CursorFetch cursorFetch;
     private final SendBuffer sendBuffer;
     private Date lastCheckDate;
+
     private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
     public Synchronizer(AppConfiguration config) {
         lastCheckDate = config.getLastModifiedDate();
-        cursorFetch = new CursorFetch(config.getSrcSolrClient());
-        sendBuffer = new SendBuffer(5_000, config.getDstSolrClient());
+        sendBuffer = new SendBuffer(config.getBufferSize(), config.getDstSolrClient());
+        cursorFetch = new CursorFetch(config.getQuerySize(), config.getSrcSolrClient());
     }
 
     public void run() {

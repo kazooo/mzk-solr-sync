@@ -14,6 +14,7 @@ import java.util.Date;
 public class CursorFetch {
 
     private boolean done;
+    private final int rows;
     private SolrQuery params;
     private Date lastCheckDate;
     private String lastCursorMark;
@@ -21,13 +22,15 @@ public class CursorFetch {
     private static final String UUID_FIELD_NAME = "PID";
     private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
 
-    public CursorFetch(SolrClient sc) {
+    public CursorFetch(int r, SolrClient sc) {
         solrClient = sc;
+        rows = r;
         reset();
     }
 
     public void from(Date lcd) {
         lastCheckDate = lcd;
+        params = createCursorParameters();
     }
 
     public boolean done() {
@@ -37,7 +40,6 @@ public class CursorFetch {
     public void reset() {
         done = false;
         lastCheckDate = null;
-        params = createCursorParameters();
         lastCursorMark = CursorMarkParams.CURSOR_MARK_START;
     }
 
@@ -56,7 +58,7 @@ public class CursorFetch {
         String query = MODIFIED_DATE_FIELD_NAME + ":[" + lastCheckDate + " TO *]";
         SolrQuery params = new SolrQuery(query);
         params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
-        params.setRows(1000);
+        params.setRows(rows);
         return params;
     }
 

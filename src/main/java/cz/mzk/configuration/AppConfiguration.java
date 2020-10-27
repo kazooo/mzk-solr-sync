@@ -29,6 +29,12 @@ public class AppConfiguration {
     @Value("#{new java.text.SimpleDateFormat('${DATE_FORMAT}').parse('${MODIFIED_DATE}')}")
     private Date lastModifiedDate;
 
+    @Value("${QUERY_SIZE:1000}")
+    private int querySize;
+
+    @Value("${BUFFER_SIZE:5000}")
+    private int bufferSize;
+
     @Bean(name = "src_solr_client")
     public SolrClient getSrcSolrClient() {
         return new HttpSolrClient.Builder(srcSolrHost).build();
