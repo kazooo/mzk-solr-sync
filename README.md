@@ -1,4 +1,4 @@
-# Gradle Docker Template for Java 
+# Solr synchronization application
 
-Simple Gradle project template with Log4J2 logging and Lombok support.\
-It uses Palantir Docker plugin to dockerize Java 14 application and run it in Docker container.
+Simple application for MZK Solr indexes synchronization. \
+Uses the *modified_date* field to filter modified documents and sends them to another index.
