@@ -28,6 +28,8 @@ repositories {
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter"
+    compile "org.apache.solr:solr-solrj:${solrVersion}"
+
     compile "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

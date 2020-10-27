@@ -1,7 +1,8 @@
-package cz.mzk;
+package cz.mzk.configuration;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.solr.client.solrj.SolrClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -9,10 +10,19 @@ import org.springframework.context.event.EventListener;
 
 @Configuration
 @Slf4j
-@AllArgsConstructor
 public class SyncConfiguration {
 
+    public SyncConfiguration(@Qualifier("src_solr_client") SolrClient srcSC,
+                             @Qualifier("src_solr_client") SolrClient dstSC,
+                             AppConfiguration c) {
+        config = c;
+        srcSolrClient = srcSC;
+        dstSolrClient = dstSC;
+    }
+
     private final AppConfiguration config;
+    private final SolrClient srcSolrClient;
+    private final SolrClient dstSolrClient;
 
     @EventListener(ApplicationReadyEvent.class)
     public void syncAfterStartup() {
