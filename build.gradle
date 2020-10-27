@@ -27,9 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.apache.logging.log4j:log4j-api:${log4j2Version}"
-    compile "org.apache.logging.log4j:log4j-core:${log4j2Version}"
-    compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
+    compile "org.springframework.boot:spring-boot-starter"
     compile "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
