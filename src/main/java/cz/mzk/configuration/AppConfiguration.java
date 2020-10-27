@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Date;
+
 
 @Configuration
 @Getter
@@ -23,6 +25,9 @@ public class AppConfiguration {
 
     @Value("${SYNC_AFTER_START:false}")
     private boolean syncAfterStart;
+
+    @Value("#{new java.text.SimpleDateFormat('${DATE_FORMAT}').parse('${MODIFIED_DATE}')}")
+    private Date lastModifiedDate;
 
     @Bean(name = "src_solr_client")
     public SolrClient getSrcSolrClient() {

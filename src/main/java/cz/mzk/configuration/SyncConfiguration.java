@@ -1,5 +1,6 @@
 package cz.mzk.configuration;
 
+import cz.mzk.solr.Synchronizer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +30,7 @@ public class SyncConfiguration {
     public void syncAfterStartup() {
         log.info("Source Solr address: " + config.getSrcSolrHost());
         log.info("Destination Solr address: " + config.getDstSolrHost());
+        log.info("Last modified date: " + config.getLastModifiedDate());
 
         if (config.isSyncAfterStart()) {
             log.info("Start synchronizing...");
