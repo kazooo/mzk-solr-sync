@@ -18,6 +18,12 @@ public class AppConfiguration {
     @Value("${DST_SOLR_HOST}")
     private String dstSolrHost;
 
+    @Value("${CRON}")
+    private String cron;
+
+    @Value("${SYNC_AFTER_START:false}")
+    private boolean syncAfterStart;
+
     @Bean(name = "src_solr_client")
     public SolrClient getSrcSolrClient() {
         return new HttpSolrClient.Builder(srcSolrHost).build();

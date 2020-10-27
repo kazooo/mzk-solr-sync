@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 
 
 @Configuration
@@ -28,6 +29,16 @@ public class SyncConfiguration {
     public void syncAfterStartup() {
         log.info("Source Solr address: " + config.getSrcSolrHost());
         log.info("Destination Solr address: " + config.getDstSolrHost());
-        log.info("Start synchronizing...");
+
+        if (config.isSyncAfterStart()) {
+            log.info("Start synchronizing...");
+            // fetch by modified_date by cursor
+            // send to dst cursor
+        }
+    }
+
+    @Scheduled(cron = "#{appConfiguration.cron}")
+    public void triggerSync() {
+        log.info("Trigger scheduled synchronizing...");
     }
 }
