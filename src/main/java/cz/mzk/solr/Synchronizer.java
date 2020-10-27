@@ -1,18 +1,21 @@
 package cz.mzk.solr;
 
 import cz.mzk.configuration.AppConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Component
+@Slf4j
 public class Synchronizer {
 
     private final CursorFetch cursorFetch;
@@ -27,12 +30,14 @@ public class Synchronizer {
     }
 
     public void run() {
+        long transferred = 0;
         cursorFetch.from(lastCheckDate);
 
         while (!cursorFetch.done()) {
             try {
                 SolrDocumentList docs = cursorFetch.next();
                 List<SolrInputDocument> inputDocs = convert(docs);
+                transferred += inputDocs.size();
                 sendBuffer.add(inputDocs);
             } catch (IOException | SolrServerException e) {
                 e.printStackTrace();
@@ -40,7 +45,9 @@ public class Synchronizer {
         }
 
         cursorFetch.reset();
+        sendBuffer.empty();
         lastCheckDate = new Date();
+        log.info("Transferred: " + transferred + " docs, last check date: " + lastCheckDate);
     }
 
     private List<SolrInputDocument> convert(SolrDocumentList docs) {
@@ -55,5 +62,11 @@ public class Synchronizer {
             }
         }
         return inputDoc;
+    }
+
+    @PreDestroy
+    public void close() {
+        cursorFetch.close();
+        sendBuffer.close();
     }
 }

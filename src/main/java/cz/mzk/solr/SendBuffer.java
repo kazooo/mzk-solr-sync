@@ -36,6 +36,24 @@ public class SendBuffer {
         }
     }
 
+    public void empty() {
+        try {
+            send();
+            dstSolrClient.commit();
+        } catch (SolrServerException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void close() {
+        try {
+            empty();
+            dstSolrClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static class LimitedList<E> extends ArrayList<E> {
 
         private final int size;

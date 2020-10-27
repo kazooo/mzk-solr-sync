@@ -8,9 +8,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CursorMarkParams;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 
 public class CursorFetch {
@@ -60,5 +58,13 @@ public class CursorFetch {
         params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
         params.setRows(1000);
         return params;
+    }
+
+    public void close() {
+        try {
+            solrClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
