@@ -8,6 +8,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CursorMarkParams;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -25,6 +26,8 @@ public class CursorFetch {
     private static final String MODEL_PATH_FIELD_NAME = "model_path";
     private static final String TIMESTAMP_FIELD_NAME = "timestamp";
     private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sssZ");
 
     public CursorFetch(int r, SolrClient sc) {
         solrClient = sc;
@@ -60,8 +63,8 @@ public class CursorFetch {
 
     private SolrQuery createCursorParameters() {
         String query = "(" +
-                MODIFIED_DATE_FIELD_NAME + ":[" + lastCheckDate + " TO *] OR " +
-                TIMESTAMP_FIELD_NAME + ":[" + lastCheckDate + " TO *]" +
+                MODIFIED_DATE_FIELD_NAME + ":[" + sdf.format(lastCheckDate) + " TO *] OR " +
+                TIMESTAMP_FIELD_NAME + ":[" + sdf.format(lastCheckDate) + " TO *]" +
                 ")";
         query += " AND !(" +
                 MODEL_PATH_FIELD_NAME + ":\"map\" OR " +
