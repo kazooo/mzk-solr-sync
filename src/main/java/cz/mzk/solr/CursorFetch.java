@@ -22,6 +22,7 @@ public class CursorFetch {
     private final SolrClient solrClient;
 
     private static final String UUID_FIELD_NAME = "PID";
+    private static final String MODEL_PATH_FIELD_NAME = "model_path";
     private static final String TIMESTAMP_FIELD_NAME = "timestamp";
     private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
 
@@ -58,8 +59,17 @@ public class CursorFetch {
     }
 
     private SolrQuery createCursorParameters() {
-        String query = MODIFIED_DATE_FIELD_NAME + ":[" + lastCheckDate + " TO *]";
-        query += " OR " + TIMESTAMP_FIELD_NAME + ":[" + lastCheckDate + " TO *]";
+        String query = "(" +
+                MODIFIED_DATE_FIELD_NAME + ":[" + lastCheckDate + " TO *] OR " +
+                TIMESTAMP_FIELD_NAME + ":[" + lastCheckDate + " TO *]" +
+                ")";
+        query += " AND !(" +
+                MODEL_PATH_FIELD_NAME + ":\"map\" OR " +
+                MODEL_PATH_FIELD_NAME + ":\"soundrecording\" OR " +
+                MODEL_PATH_FIELD_NAME + ":\"soundunit\" OR " +
+                MODEL_PATH_FIELD_NAME + ":\"sheetmusic\" OR " +
+                MODEL_PATH_FIELD_NAME + ":\"track\"" +
+                ")";
         SolrQuery params = new SolrQuery(query);
         params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
         params.setRows(rows);

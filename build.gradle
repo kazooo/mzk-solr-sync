@@ -46,7 +46,7 @@ jar {
 }
 
 docker {
-    name = "app:latest"
+    name = "solr_sync:latest"
     files tasks.jar.outputs
     copySpec.from("build").into("build")
     setDockerfile(file("Dockerfile"))
