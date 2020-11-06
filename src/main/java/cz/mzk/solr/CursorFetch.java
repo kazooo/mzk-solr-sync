@@ -14,12 +14,15 @@ import java.util.Date;
 public class CursorFetch {
 
     private boolean done;
-    private final int rows;
     private SolrQuery params;
     private Date lastCheckDate;
     private String lastCursorMark;
+
+    private final int rows;
     private final SolrClient solrClient;
+
     private static final String UUID_FIELD_NAME = "PID";
+    private static final String TIMESTAMP_FIELD_NAME = "timestamp";
     private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
 
     public CursorFetch(int r, SolrClient sc) {
@@ -56,6 +59,7 @@ public class CursorFetch {
 
     private SolrQuery createCursorParameters() {
         String query = MODIFIED_DATE_FIELD_NAME + ":[" + lastCheckDate + " TO *]";
+        query += " OR " + TIMESTAMP_FIELD_NAME + ":[" + lastCheckDate + " TO *]";
         SolrQuery params = new SolrQuery(query);
         params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
         params.setRows(rows);
