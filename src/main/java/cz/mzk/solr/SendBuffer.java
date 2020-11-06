@@ -64,12 +64,18 @@ public class SendBuffer {
 
         public List<E> addAll(List<E> c) {
             int freeSpace = size - super.size();
+            // if no free space returns all docs
             if (freeSpace == 0) return c;
 
+            // get how many doc can be stored in buffer,
+            // all documents or 'freeSpace' of the buffer
             int maxEls = Integer.min(freeSpace, c.size());
+            // store them
             super.addAll(c.subList(0, maxEls));
 
-            if (maxEls == freeSpace) {
+            // if stored only part of the original list...
+            if (maxEls == freeSpace && maxEls < c.size()) {
+                // returns part of the original list that is not in the buffer
                 return c.subList(maxEls, c.size()-1);
             } else {
                 return null;   // add all elements of incoming list
