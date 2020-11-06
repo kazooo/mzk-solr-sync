@@ -22,6 +22,7 @@ public class Synchronizer {
     private final SendBuffer sendBuffer;
     private Date lastCheckDate;
 
+    private static final String DNNT_FIELD_NAME = "dnnt";
     private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
     public Synchronizer(AppConfiguration config) {
@@ -62,6 +63,7 @@ public class Synchronizer {
                 inputDoc.addField(pair.getKey(), pair.getValue());
             }
         }
+        inputDoc.addField(DNNT_FIELD_NAME, true);
         return inputDoc;
     }
 
