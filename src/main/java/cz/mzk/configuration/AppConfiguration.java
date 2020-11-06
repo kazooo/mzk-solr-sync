@@ -37,11 +37,15 @@ public class AppConfiguration {
 
     @Bean(name = "src_solr_client")
     public SolrClient getSrcSolrClient() {
-        return new HttpSolrClient.Builder(srcSolrHost).build();
+        return getSolrClient(srcSolrHost);
     }
 
     @Bean(name = "dst_solr_client")
     public SolrClient getDstSolrClient() {
-        return new HttpSolrClient.Builder(dstSolrHost).build();
+        return getSolrClient(dstSolrHost);
+    }
+
+    private SolrClient getSolrClient(String host) {
+        return new HttpSolrClient.Builder(host).withConnectionTimeout(60000).build();
     }
 }

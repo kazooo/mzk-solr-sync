@@ -27,7 +27,7 @@ public class CursorFetch {
     private static final String TIMESTAMP_FIELD_NAME = "timestamp";
     private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sssZ");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
 
     public CursorFetch(int r, SolrClient sc) {
         solrClient = sc;
