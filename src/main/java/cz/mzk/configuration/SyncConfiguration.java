@@ -21,10 +21,9 @@ public class SyncConfiguration {
     public void syncAfterStartup() {
         log.info("Source Solr address: " + config.getSrcSolrHost());
         log.info("Destination Solr address: " + config.getDstSolrHost());
-        log.info("Last modified date: " + config.getLastModifiedDate());
 
         if (config.isSyncAfterStart()) {
-            log.info("Start synchronizing...");
+            log.info("Synchronize after start...");
             synchronizer.run();
         }
     }

@@ -33,7 +33,11 @@ public class Synchronizer {
 
     public void run() {
         long transferred = 0;
+        log.info("Last modified date: " + lastCheckDate + ", start synchronize...");
         cursorFetch.from(lastCheckDate);
+        // next time check documents that
+        // have been changed after synchronization start
+        lastCheckDate = new Date();
 
         while (!cursorFetch.done()) {
             try {
@@ -50,7 +54,6 @@ public class Synchronizer {
 
         cursorFetch.reset();
         sendBuffer.empty();
-        lastCheckDate = new Date();
         log.info("Transferred: " + transferred + " docs, last check date: " + lastCheckDate);
     }
 
