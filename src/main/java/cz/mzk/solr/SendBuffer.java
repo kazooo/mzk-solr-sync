@@ -1,5 +1,6 @@
 package cz.mzk.solr;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
 public class SendBuffer {
 
     private final SolrClient dstSolrClient;
@@ -23,6 +25,7 @@ public class SendBuffer {
         while (inputDocs != null) {
             inputDocs = docBuffer.addAll(inputDocs);
             if (inputDocs != null) {
+                log.debug("Buffer overflow, send current buffer content, then add " + inputDocs.size() + " documents...");
                 send();
             }
         }
@@ -30,7 +33,9 @@ public class SendBuffer {
 
     private void send() {
         try {
+            log.debug("Sending " + docBuffer.size() + " documents to the destination Solr...");
             dstSolrClient.add(docBuffer);
+            docBuffer.clear();
         } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }
@@ -38,6 +43,7 @@ public class SendBuffer {
 
     public void empty() {
         try {
+            log.debug("Send the buffer content and commit...");
             send();
             dstSolrClient.commit();
         } catch (SolrServerException | IOException e) {
@@ -47,6 +53,7 @@ public class SendBuffer {
 
     public void close() {
         try {
+            log.debug("Empty the buffer and close destination Solr client...");
             empty();
             dstSolrClient.close();
         } catch (IOException e) {

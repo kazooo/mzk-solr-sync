@@ -8,4 +8,8 @@
         <appender-ref ref="CONSOLE" />
     </root>
 
+    <logger name="cz.mzk" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
 </configuration>

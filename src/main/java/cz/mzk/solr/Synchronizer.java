@@ -38,7 +38,9 @@ public class Synchronizer {
         while (!cursorFetch.done()) {
             try {
                 SolrDocumentList docs = cursorFetch.next();
+                log.debug("Got " + docs.size() + " documents...");
                 List<SolrInputDocument> inputDocs = convert(docs);
+                log.debug("Converted " + docs.size() + " documents...");
                 transferred += inputDocs.size();
                 sendBuffer.add(inputDocs);
             } catch (IOException | SolrServerException e) {
@@ -69,6 +71,7 @@ public class Synchronizer {
 
     @PreDestroy
     public void close() {
+        log.debug("Close sources...");
         cursorFetch.close();
         sendBuffer.close();
     }

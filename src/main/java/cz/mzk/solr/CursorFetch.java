@@ -1,5 +1,6 @@
 package cz.mzk.solr;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+@Slf4j
 public class CursorFetch {
 
     private boolean done;
@@ -36,6 +38,7 @@ public class CursorFetch {
     }
 
     public void from(Date lcd) {
+        log.debug("Setup querying from " + lcd + "...");
         lastCheckDate = lcd;
         params = createCursorParameters();
     }
@@ -45,6 +48,7 @@ public class CursorFetch {
     }
 
     public void reset() {
+        log.debug("Reset...");
         done = false;
         lastCheckDate = null;
         lastCursorMark = CursorMarkParams.CURSOR_MARK_START;
@@ -56,6 +60,7 @@ public class CursorFetch {
         String nextCursorMark = response.getNextCursorMark();
         if (lastCursorMark.equals(nextCursorMark)) {
             done = true;
+            log.debug("Reached the end of cursor response...");
         }
         lastCursorMark = nextCursorMark;
         return response.getResults();
@@ -81,6 +86,7 @@ public class CursorFetch {
 
     public void close() {
         try {
+            log.debug("Close source Solr client...");
             solrClient.close();
         } catch (IOException e) {
             e.printStackTrace();
