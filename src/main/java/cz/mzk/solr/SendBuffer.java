@@ -34,6 +34,7 @@ public class SendBuffer {
     private void send() {
         try {
             log.debug("Sending " + docBuffer.size() + " documents to the destination Solr...");
+            if (docBuffer.isEmpty()) return;
             dstSolrClient.add(docBuffer);
             docBuffer.clear();
         } catch (SolrServerException | IOException e) {
