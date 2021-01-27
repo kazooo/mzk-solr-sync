@@ -20,12 +20,15 @@ public class Synchronizer {
 
     private final CursorFetch cursorFetch;
     private final SendBuffer sendBuffer;
+    private final List<String> ignoredRoots;
     private Date lastCheckDate;
 
     private static final String DNNT_FIELD_NAME = "dnnt";
     private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
     public Synchronizer(AppConfiguration config) {
+        ignoredRoots = config.getIgnoredRoots();
+        ignoredRoots.forEach(uuid -> log.info("Ignore " + uuid));
         lastCheckDate = config.getLastModifiedDate();
         sendBuffer = new SendBuffer(config.getBufferSize(), config.getDstSolrClient());
         cursorFetch = new CursorFetch(config.getQuerySize(), config.getSrcSolrClient());
@@ -41,7 +44,7 @@ public class Synchronizer {
 
         while (!cursorFetch.done()) {
             try {
-                SolrDocumentList docs = cursorFetch.next();
+                List<SolrDocument> docs = filter(cursorFetch.next());
                 log.debug("Got " + docs.size() + " documents...");
                 List<SolrInputDocument> inputDocs = convert(docs);
                 log.debug("Converted " + docs.size() + " documents...");
@@ -57,7 +60,13 @@ public class Synchronizer {
         log.info("Transferred: " + transferred + " docs, last check date: " + lastCheckDate);
     }
 
-    private List<SolrInputDocument> convert(SolrDocumentList docs) {
+    private List<SolrDocument> filter(SolrDocumentList docs) {
+        return docs.stream()
+                .filter(doc -> !ignoredRoots.contains((String) doc.getFieldValue("root_pid")))
+                .collect(Collectors.toList());
+    }
+
+    private List<SolrInputDocument> convert(List<SolrDocument> docs) {
         return docs.stream().map(this::convert).collect(Collectors.toList());
     }
 
