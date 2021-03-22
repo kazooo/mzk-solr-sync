@@ -1,6 +1,7 @@
 package cz.mzk.configuration;
 
-import cz.mzk.solr.Synchronizer;
+import cz.mzk.solr.DeletionSynchronizer;
+import cz.mzk.solr.ModificationSynchronizer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -15,7 +16,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class SyncConfiguration {
 
     private final AppConfiguration config;
-    private final Synchronizer synchronizer;
+    private final ModificationSynchronizer modificationSynchronizer;
+    private final DeletionSynchronizer deletionSynchronizer;
 
     @EventListener(ApplicationReadyEvent.class)
     public void syncAfterStartup() {
@@ -24,13 +26,19 @@ public class SyncConfiguration {
 
         if (config.isSyncAfterStart()) {
             log.info("Synchronize after start...");
-            synchronizer.run();
+            modificationSynchronizer.sync();
         }
     }
 
-    @Scheduled(cron = "#{appConfiguration.cron}")
-    public void triggerSync() {
-        log.info("Trigger scheduled synchronizing...");
-        synchronizer.run();
+    @Scheduled(cron = "#{appConfiguration.modificationsSyncCron}")
+    public void triggerModificationsSync() {
+        log.info("Trigger scheduled synchronization of modifications...");
+        modificationSynchronizer.sync();
+    }
+
+    @Scheduled(cron = "#{appConfiguration.deletionsSyncCron}")
+    public void triggerDeletionsSync() {
+        log.info("Trigger scheduled synchronization of deletions...");
+        deletionSynchronizer.sync();
     }
 }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class Synchronizer {
+public class ModificationSynchronizer {
 
     private final ModificationCursor modificationCursor;
     private final SendBuffer sendBuffer;
@@ -26,7 +26,7 @@ public class Synchronizer {
     private static final String DNNT_FIELD_NAME = "dnnt";
     private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
-    public Synchronizer(AppConfiguration config) {
+    public ModificationSynchronizer(AppConfiguration config) {
         ignoredRoots = config.getIgnoredRoots();
         ignoredRoots.forEach(uuid -> log.info("Ignore " + uuid));
         lastCheckDate = config.getLastModifiedDate();
@@ -34,7 +34,7 @@ public class Synchronizer {
         modificationCursor = new ModificationCursor(config.getSrcSolrClient(), config.getQuerySize());
     }
 
-    public void run() {
+    public void sync() {
         long transferred = 0;
         log.info("Last modified date: " + lastCheckDate + ", start synchronization...");
         modificationCursor.from(lastCheckDate);

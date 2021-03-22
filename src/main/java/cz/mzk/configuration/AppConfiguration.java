@@ -28,8 +28,11 @@ public class AppConfiguration {
     @Value("${DST_SOLR_HOST}")
     private String dstSolrHost;
 
-    @Value("${CRON}")
-    private String cron;
+    @Value("${MODIFICATIONS_SYNC_CRON}")
+    private String modificationsSyncCron;
+
+    @Value("${DELETIONS_SYNC_CRON}")
+    private String deletionsSyncCron;
 
     @Value("${SYNC_AFTER_START:false}")
     private boolean syncAfterStart;
@@ -46,6 +49,9 @@ public class AppConfiguration {
     @Value("${IGNORED_ROOTS_FILE:}")
     private String ignoredRootsFileName;
 
+    /**
+     * Temporary solution, replace with another data source in the future...
+     * */
     public List<String> getIgnoredRoots() {
         try {
             return Files.readAllLines(Paths.get(ignoredRootsFileName))
