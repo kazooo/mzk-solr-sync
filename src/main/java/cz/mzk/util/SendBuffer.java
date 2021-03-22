@@ -1,4 +1,4 @@
-package cz.mzk.solr;
+package cz.mzk.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;

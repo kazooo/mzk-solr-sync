@@ -1,6 +1,9 @@
-package cz.mzk.solr;
+package cz.mzk.synchronizer;
 
 import cz.mzk.configuration.AppConfiguration;
+import cz.mzk.cursor.ModificationCursor;
+import cz.mzk.util.SendBuffer;
+import cz.mzk.util.SolrField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
@@ -23,7 +26,6 @@ public class ModificationSynchronizer {
     private final List<String> ignoredRoots;
     private Date lastCheckDate;
 
-    private static final String DNNT_FIELD_NAME = "dnnt";
     private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
     public ModificationSynchronizer(AppConfiguration config) {
@@ -62,7 +64,7 @@ public class ModificationSynchronizer {
 
     private List<SolrDocument> filter(SolrDocumentList docs) {
         return docs.stream()
-                .filter(doc -> !ignoredRoots.contains((String) doc.getFieldValue("root_pid")))
+                .filter(doc -> !ignoredRoots.contains((String) doc.getFieldValue(SolrField.ROOT_UUID)))
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +79,7 @@ public class ModificationSynchronizer {
                 inputDoc.addField(pair.getKey(), pair.getValue());
             }
         }
-        inputDoc.addField(DNNT_FIELD_NAME, true);
+        inputDoc.addField(SolrField.DNNT, true);
         return inputDoc;
     }
 

@@ -1,6 +1,9 @@
-package cz.mzk.solr;
+package cz.mzk.synchronizer;
 
 import cz.mzk.configuration.AppConfiguration;
+import cz.mzk.cursor.BookDocCursor;
+import cz.mzk.cursor.RootDocCursor;
+import cz.mzk.util.SolrField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -24,8 +27,6 @@ public class DeletionSynchronizer {
     private final BookDocCursor srcBookDocCursor;
     private final BookDocCursor dstBookDocCursor;
 
-    private static final String ROOT_UUID_FILED_NAME = "root_pid";
-
     public DeletionSynchronizer(AppConfiguration config) {
         srcSolrClient = config.getSrcSolrClient();
         dstSolrClient = config.getDstSolrClient();
@@ -38,7 +39,7 @@ public class DeletionSynchronizer {
         while (!dstRootDocCursor.done()) {
             try {
                 dstRootDocCursor.next().stream()
-                        .map(doc -> (String) doc.getFieldValue("PID"))
+                        .map(doc -> (String) doc.getFieldValue(SolrField.UUID))
                         .forEach(rootUuid -> {
                             if (!numFoundIsEqual(rootUuid, srcSolrClient, dstSolrClient))
                                 syncBook(rootUuid);
@@ -72,7 +73,7 @@ public class DeletionSynchronizer {
         while (!bookDocCursor.done()) {
             try {
                 bookDocCursor.next().stream()
-                        .map(doc -> (String) doc.getFieldValue("PID"))
+                        .map(doc -> (String) doc.getFieldValue(SolrField.UUID))
                         .forEach(result::add);
             } catch (IOException | SolrServerException e) {
                 e.printStackTrace();
@@ -93,7 +94,7 @@ public class DeletionSynchronizer {
     }
 
     private long getCountByRoot(String rootUuid, SolrClient solrClient) throws IOException, SolrServerException {
-        return getCount(solrClient, new SolrQuery(ROOT_UUID_FILED_NAME + ":\"" + rootUuid + "\"").setRows(0));
+        return getCount(solrClient, new SolrQuery(SolrField.ROOT_UUID + ":\"" + rootUuid + "\"").setRows(0));
     }
 
     private long getCount(SolrClient solrClient, SolrQuery params) throws IOException, SolrServerException {

@@ -1,7 +1,7 @@
 package cz.mzk.configuration;
 
-import cz.mzk.solr.DeletionSynchronizer;
-import cz.mzk.solr.ModificationSynchronizer;
+import cz.mzk.synchronizer.DeletionSynchronizer;
+import cz.mzk.synchronizer.ModificationSynchronizer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

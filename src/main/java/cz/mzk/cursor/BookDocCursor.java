@@ -1,5 +1,6 @@
-package cz.mzk.solr;
+package cz.mzk.cursor;
 
+import cz.mzk.util.SolrField;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -12,9 +13,6 @@ public class BookDocCursor {
 
     private final CursorFetch cursorFetch;
     private final int rows;
-
-    private static final String UUID_FIELD_NAME = "PID";
-    private static final String ROOT_UUID_FIELD_NAME = "root_uuid";
 
     public BookDocCursor(SolrClient solrClient, int r) {
         cursorFetch = new CursorFetch(solrClient);
@@ -42,9 +40,9 @@ public class BookDocCursor {
     }
 
     private SolrQuery createCursorParameters(String rootUuid) {
-        SolrQuery params = new SolrQuery(ROOT_UUID_FIELD_NAME + ":\"" + rootUuid + "\"");
-        params.addField(UUID_FIELD_NAME);
-        params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
+        SolrQuery params = new SolrQuery(SolrField.ROOT_UUID + ":\"" + rootUuid + "\"");
+        params.setSort(SolrQuery.SortClause.asc(SolrField.UUID));
+        params.addField(SolrField.UUID);
         params.setRows(rows);
         return params;
     }

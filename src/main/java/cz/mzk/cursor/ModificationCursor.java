@@ -1,5 +1,6 @@
-package cz.mzk.solr;
+package cz.mzk.cursor;
 
+import cz.mzk.util.SolrField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -16,11 +17,6 @@ public class ModificationCursor {
 
     private final int rows;
     private final CursorFetch cursorFetch;
-
-    private static final String UUID_FIELD_NAME = "PID";
-    private static final String MODEL_PATH_FIELD_NAME = "model_path";
-    private static final String TIMESTAMP_FIELD_NAME = "timestamp";
-    private static final String MODIFIED_DATE_FIELD_NAME = "modified_date";
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
 
@@ -52,17 +48,17 @@ public class ModificationCursor {
 
     private SolrQuery createCursorParameters(Date lastCheckDate) {
         String query = "(" +
-                MODIFIED_DATE_FIELD_NAME + ":[" + sdf.format(lastCheckDate) + " TO *] OR " +
-                TIMESTAMP_FIELD_NAME + ":[" + sdf.format(lastCheckDate) + " TO *]" +
+                SolrField.MODIFIED_DATE + ":[" + sdf.format(lastCheckDate) + " TO *] OR " +
+                SolrField.TIMESTAMP + ":[" + sdf.format(lastCheckDate) + " TO *]" +
                 ")";
         query += " AND !(" +
-                MODEL_PATH_FIELD_NAME + ":\"soundrecording\" OR " +
-                MODEL_PATH_FIELD_NAME + ":\"soundunit\" OR " +
-                MODEL_PATH_FIELD_NAME + ":\"sheetmusic\" OR " +
-                MODEL_PATH_FIELD_NAME + ":\"track\"" +
+                SolrField.MODEL_PATH + ":\"soundrecording\" OR " +
+                SolrField.MODEL_PATH + ":\"soundunit\" OR " +
+                SolrField.MODEL_PATH + ":\"sheetmusic\" OR " +
+                SolrField.MODEL_PATH + ":\"track\"" +
                 ")";
         SolrQuery params = new SolrQuery(query);
-        params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
+        params.setSort(SolrQuery.SortClause.asc(SolrField.UUID));
         params.setRows(rows);
         return params;
     }

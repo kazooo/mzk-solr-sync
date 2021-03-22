@@ -1,5 +1,6 @@
-package cz.mzk.solr;
+package cz.mzk.cursor;
 
+import cz.mzk.util.SolrField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -14,8 +15,6 @@ public class RootDocCursor {
 
     private final CursorFetch cursorFetch;
     private final int rows;
-
-    private static final String UUID_FIELD_NAME = "PID";
 
     public RootDocCursor(SolrClient destSolrClient, int r) {
         cursorFetch = new CursorFetch(destSolrClient);
@@ -42,8 +41,8 @@ public class RootDocCursor {
     private SolrQuery createCursorParameters() {
         SolrQuery params = new SolrQuery("*:*");
         params.addFilterQuery("{!frange l=1 u=1 v=eq(PID,root_pid)}");
-        params.addField(UUID_FIELD_NAME);
-        params.setSort(SolrQuery.SortClause.asc(UUID_FIELD_NAME));
+        params.setSort(SolrQuery.SortClause.asc(SolrField.UUID));
+        params.addField(SolrField.UUID);
         params.setRows(rows);
         return params;
     }
