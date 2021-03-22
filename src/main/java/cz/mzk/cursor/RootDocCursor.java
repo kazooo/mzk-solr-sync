@@ -1,7 +1,6 @@
 package cz.mzk.cursor;
 
 import cz.mzk.util.SolrField;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -10,7 +9,6 @@ import org.apache.solr.common.SolrDocumentList;
 import java.io.IOException;
 
 
-@Slf4j
 public class RootDocCursor {
 
     private final CursorFetch cursorFetch;
@@ -28,10 +26,6 @@ public class RootDocCursor {
 
     public SolrDocumentList next() throws IOException, SolrServerException {
         return cursorFetch.next();
-    }
-
-    public void reset() {
-        cursorFetch.reset();
     }
 
     public void close() {

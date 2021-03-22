@@ -28,33 +28,36 @@ public class DeletionSynchronizer {
     private final BookDocCursor dstBookDocCursor;
 
     public DeletionSynchronizer(AppConfiguration config) {
+        int querySize = config.getQuerySize();
         srcSolrClient = config.getSrcSolrClient();
         dstSolrClient = config.getDstSolrClient();
-        dstRootDocCursor = new RootDocCursor(dstSolrClient, config.getQuerySize());
-        srcBookDocCursor = new BookDocCursor(srcSolrClient, config.getQuerySize());
-        dstBookDocCursor = new BookDocCursor(dstSolrClient, config.getQuerySize());
+        dstRootDocCursor = new RootDocCursor(dstSolrClient, querySize);
+        srcBookDocCursor = new BookDocCursor(srcSolrClient, querySize);
+        dstBookDocCursor = new BookDocCursor(dstSolrClient, querySize);
     }
 
     public void sync() {
+        int removed = 0;
         while (!dstRootDocCursor.done()) {
             try {
-                dstRootDocCursor.next().stream()
+                removed += dstRootDocCursor.next().stream()
                         .map(doc -> (String) doc.getFieldValue(SolrField.UUID))
-                        .forEach(rootUuid -> {
-                            if (!numFoundIsEqual(rootUuid, srcSolrClient, dstSolrClient))
-                                syncBook(rootUuid);
-                        });
+                        .filter(rootUuid -> !numFoundIsEqual(rootUuid, srcSolrClient, dstSolrClient))
+                        .mapToInt(this::syncBook).sum();
             } catch (IOException | SolrServerException e) {
                 e.printStackTrace();
             }
         }
+        commitDst();
+        log.info("Finish synchronization of deletions, removed " + removed + " docs");
     }
 
-    private void syncBook(String rootUuid) {
+    private int syncBook(String rootUuid) {
         Set<String> srcSet = collectUuidsByRoot(rootUuid, srcBookDocCursor);
         Set<String> dstSet = collectUuidsByRoot(rootUuid, dstBookDocCursor);
         dstSet.removeAll(srcSet);      // filter uuids that don't exist in the source
         remove(dstSet, dstSolrClient); // and remove them from the destination
+        return dstSet.size();
     }
 
     private void remove(Set<String> removeSet, SolrClient client) {
@@ -62,6 +65,14 @@ public class DeletionSynchronizer {
             return;
         try {
             client.deleteById(new ArrayList<>(removeSet));
+        } catch (SolrServerException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void commitDst() {
+        try {
+            dstSolrClient.commit();
         } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }

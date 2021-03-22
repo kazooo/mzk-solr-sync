@@ -23,7 +23,7 @@ public class ModificationSynchronizer {
 
     private final ModificationCursor modificationCursor;
     private final SendBuffer sendBuffer;
-    private final List<String> ignoredRoots;
+    private final Set<String> ignoredRoots;
     private Date lastCheckDate;
 
     private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
@@ -57,7 +57,6 @@ public class ModificationSynchronizer {
             }
         }
 
-        modificationCursor.reset();
         sendBuffer.empty();
         log.info("Transferred: " + transferred + " docs, last check date: " + lastCheckDate);
     }

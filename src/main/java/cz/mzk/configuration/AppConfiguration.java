@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -52,15 +52,14 @@ public class AppConfiguration {
     /**
      * Temporary solution, replace with another data source in the future...
      * */
-    public List<String> getIgnoredRoots() {
+    public Set<String> getIgnoredRoots() {
         try {
-            return Files.readAllLines(Paths.get(ignoredRootsFileName))
-                    .stream()
+            return Files.readAllLines(Paths.get(ignoredRootsFileName)).stream()
                     .map(uuid -> uuid.startsWith("uuid:") ? uuid : "uuid:" + uuid)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
         } catch (IOException e) {
             log.warn("Can't load ignored document roots from " + ignoredRootsFileName);
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 

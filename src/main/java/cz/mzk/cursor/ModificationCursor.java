@@ -38,10 +38,6 @@ public class ModificationCursor {
         return cursorFetch.next();
     }
 
-    public void reset() {
-        cursorFetch.reset();
-    }
-
     public void close() {
         cursorFetch.close();
     }

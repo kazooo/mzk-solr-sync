@@ -39,7 +39,7 @@ bootJar {
 }
 
 docker {
-    name = "ermak/solr_sync:latest"
+    name = "solr_sync:${appVersion}"
     files tasks.bootJar.outputs
     copySpec.from("build").into("build")
     setDockerfile(file("Dockerfile"))

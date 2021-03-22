@@ -31,10 +31,6 @@ public class BookDocCursor {
         return cursorFetch.next();
     }
 
-    public void reset() {
-        cursorFetch.reset();
-    }
-
     public void close() {
         cursorFetch.close();
     }
