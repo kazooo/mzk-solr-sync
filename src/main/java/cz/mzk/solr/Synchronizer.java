@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class Synchronizer {
 
-    private final CursorFetch cursorFetch;
+    private final ModificationCursor modificationCursor;
     private final SendBuffer sendBuffer;
     private final List<String> ignoredRoots;
     private Date lastCheckDate;
@@ -31,20 +31,20 @@ public class Synchronizer {
         ignoredRoots.forEach(uuid -> log.info("Ignore " + uuid));
         lastCheckDate = config.getLastModifiedDate();
         sendBuffer = new SendBuffer(config.getBufferSize(), config.getDstSolrClient());
-        cursorFetch = new CursorFetch(config.getQuerySize(), config.getSrcSolrClient());
+        modificationCursor = new ModificationCursor(config.getSrcSolrClient(), config.getQuerySize());
     }
 
     public void run() {
         long transferred = 0;
-        log.info("Last modified date: " + lastCheckDate + ", start synchronize...");
-        cursorFetch.from(lastCheckDate);
+        log.info("Last modified date: " + lastCheckDate + ", start synchronization...");
+        modificationCursor.from(lastCheckDate);
         // next time check documents that
-        // have been changed after synchronization start
+        // have been changed after the synchronization start
         lastCheckDate = new Date();
 
-        while (!cursorFetch.done()) {
+        while (!modificationCursor.done()) {
             try {
-                List<SolrDocument> docs = filter(cursorFetch.next());
+                List<SolrDocument> docs = filter(modificationCursor.next());
                 log.debug("Got " + docs.size() + " documents...");
                 List<SolrInputDocument> inputDocs = convert(docs);
                 log.debug("Converted " + docs.size() + " documents...");
@@ -55,7 +55,7 @@ public class Synchronizer {
             }
         }
 
-        cursorFetch.reset();
+        modificationCursor.reset();
         sendBuffer.empty();
         log.info("Transferred: " + transferred + " docs, last check date: " + lastCheckDate);
     }
@@ -84,7 +84,7 @@ public class Synchronizer {
     @PreDestroy
     public void close() {
         log.debug("Close sources...");
-        cursorFetch.close();
+        modificationCursor.close();
         sendBuffer.close();
     }
 }
