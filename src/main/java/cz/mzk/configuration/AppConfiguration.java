@@ -34,8 +34,11 @@ public class AppConfiguration {
     @Value("${DELETIONS_SYNC_CRON}")
     private String deletionsSyncCron;
 
-    @Value("${SYNC_AFTER_START:false}")
-    private boolean syncAfterStart;
+    @Value("${SYNC_MODIFS_AFTER_START:false}")
+    private boolean syncModificationsAfterStart;
+
+    @Value("${SYNC_DELETS_AFTER_START:false}")
+    private boolean syncDeletionsAfterStart;
 
     @Value("#{new java.text.SimpleDateFormat('${DATE_FORMAT}').parse('${MODIFIED_DATE}')}")
     private Date lastModifiedDate;

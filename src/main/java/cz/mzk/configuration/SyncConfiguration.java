@@ -24,9 +24,14 @@ public class SyncConfiguration {
         log.info("Source Solr address: " + config.getSrcSolrHost());
         log.info("Destination Solr address: " + config.getDstSolrHost());
 
-        if (config.isSyncAfterStart()) {
-            log.info("Synchronize after start...");
+        if (config.isSyncModificationsAfterStart()) {
+            log.info("Synchronize modifications after startup...");
             modificationSynchronizer.sync();
+        }
+
+        if (config.isSyncDeletionsAfterStart()) {
+            log.info("Synchronize deletions after startup...");
+            deletionSynchronizer.sync();
         }
     }
 
