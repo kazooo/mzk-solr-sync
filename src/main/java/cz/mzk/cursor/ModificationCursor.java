@@ -27,7 +27,7 @@ public class ModificationCursor {
 
     public void from(Date lcd) {
         log.debug("Setup querying from " + lcd + "...");
-        cursorFetch.setParams(createCursorParameters(lcd));
+        cursorFetch.setParams(createCursorParameters(lcd, rows));
     }
 
     public boolean done() {
@@ -42,7 +42,7 @@ public class ModificationCursor {
         cursorFetch.close();
     }
 
-    private SolrQuery createCursorParameters(Date lastCheckDate) {
+    private SolrQuery createCursorParameters(Date lastCheckDate, int rows) {
         String query = "(" +
                 SolrField.MODIFIED_DATE + ":[" + sdf.format(lastCheckDate) + " TO *] OR " +
                 SolrField.TIMESTAMP + ":[" + sdf.format(lastCheckDate) + " TO *]" +

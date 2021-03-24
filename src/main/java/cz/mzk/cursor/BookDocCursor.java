@@ -20,7 +20,7 @@ public class BookDocCursor {
     }
 
     public void forRoot(String rootUuid) {
-        cursorFetch.setParams(createCursorParameters(rootUuid));
+        cursorFetch.setParams(createCursorParameters(rootUuid, rows));
     }
 
     public boolean done() {
@@ -35,7 +35,7 @@ public class BookDocCursor {
         cursorFetch.close();
     }
 
-    private SolrQuery createCursorParameters(String rootUuid) {
+    private SolrQuery createCursorParameters(String rootUuid, int rows) {
         SolrQuery params = new SolrQuery(SolrField.ROOT_UUID + ":\"" + rootUuid + "\"");
         params.setSort(SolrQuery.SortClause.asc(SolrField.UUID));
         params.addField(SolrField.UUID);

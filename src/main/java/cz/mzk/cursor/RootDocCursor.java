@@ -12,12 +12,10 @@ import java.io.IOException;
 public class RootDocCursor {
 
     private final CursorFetch cursorFetch;
-    private final int rows;
 
     public RootDocCursor(SolrClient destSolrClient, int r) {
         cursorFetch = new CursorFetch(destSolrClient);
-        cursorFetch.setParams(createCursorParameters());
-        rows = r;
+        cursorFetch.setParams(createCursorParameters(r));
     }
 
     public boolean done() {
@@ -32,7 +30,7 @@ public class RootDocCursor {
         cursorFetch.close();
     }
 
-    private SolrQuery createCursorParameters() {
+    private SolrQuery createCursorParameters(int rows) {
         SolrQuery params = new SolrQuery("*:*");
         params.addFilterQuery("{!frange l=1 u=1 v=eq(PID,root_pid)}");
         params.setSort(SolrQuery.SortClause.asc(SolrField.UUID));
