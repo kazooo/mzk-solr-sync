@@ -63,3 +63,12 @@ docker {
 }
 
 docker.dependsOn jar
+
+clean.doFirst {
+    delete(project.file('src/test/resources/dst_solr/filestore'))
+    delete(project.file('src/test/resources/dst_solr/userfiles'))
+    delete(project.file('src/test/resources/dst_solr/test_core/data'))
+    delete(project.file('src/test/resources/src_solr/filestore'))
+    delete(project.file('src/test/resources/src_solr/userfiles'))
+    delete(project.file('src/test/resources/src_solr/test_core/data'))
+}
