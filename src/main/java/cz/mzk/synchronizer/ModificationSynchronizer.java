@@ -78,7 +78,9 @@ public class ModificationSynchronizer {
                 inputDoc.addField(pair.getKey(), pair.getValue());
             }
         }
-        inputDoc.addField(SolrField.DNNT, true);
+        if (!doc.containsKey(SolrField.DNNT)) {
+            inputDoc.addField(SolrField.DNNT, true);
+        }
         return inputDoc;
     }
 
