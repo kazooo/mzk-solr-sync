@@ -3,6 +3,7 @@ package cz.mzk.util;
 public class SolrField {
     public static final String UUID = "PID";
     public static final String DNNT = "dnnt";
+    public static final String LABELS = "dnnt-labels";
     public static final String TIMESTAMP = "timestamp";
     public static final String ROOT_UUID = "root_pid";
     public static final String MODEL_PATH = "model_path";

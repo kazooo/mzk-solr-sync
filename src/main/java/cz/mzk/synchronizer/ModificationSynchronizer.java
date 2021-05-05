@@ -52,6 +52,7 @@ public class ModificationSynchronizer {
                 log.debug("Converted " + docs.size() + " documents...");
                 transferred += inputDocs.size();
                 sendBuffer.add(inputDocs);
+                log.debug("Transferred: " + transferred + " docs.");
             } catch (IOException | SolrServerException e) {
                 e.printStackTrace();
             }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Solr managed schema - automatically generated - DO NOT EDIT -->
 <schema name="example-data-driven-schema" version="1.6">
-
+  <uniqueKey>PID</uniqueKey>
   <fieldType name="binary" class="solr.BinaryField"/>
   <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
   <fieldType name="booleans" class="solr.BoolField" sortMissingLast="true" multiValued="true"/>
@@ -18,11 +19,12 @@
   <fieldType name="random" class="solr.RandomSortField" indexed="true"/>
   <fieldType name="string" class="solr.StrField" sortMissingLast="true"/>
   <fieldType name="strings" class="solr.StrField" sortMissingLast="true" multiValued="true"/>
-
-  <uniqueKey>PID</uniqueKey>
-
   <field name="PID" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-  <field name="root_pid" type="string" indexed="true" stored="true"/>
   <field name="_version_" type="plong" indexed="true" stored="true"/>
-
+  <field name="dnnt" type="booleans"/>
+  <field name="dnnt-labels" type="strings"/>
+  <field name="model_path" type="strings"/>
+  <field name="modified_date" type="pdates"/>
+  <field name="root_pid" type="string" indexed="true" stored="true"/>
+  <field name="timestamp" type="pdates"/>
 </schema>
